@@ -8,7 +8,7 @@ An infrastructure may offer various services. These services need to be checked 
 In order to conclude about the operational state of the service, all or part of the metrics that check the service’s functionality should be taken into account. In Metrics Profiles are included , for each service, these metrics whose results are considered to the computations of the service’s state.
 
 
-##### Example 1  - Metrics Profile for a Site service: 
+### Example 1  - Metrics Profile for a Site service: 
 A service of type Site runs on host1.example.com. The Site service should operate properly , be accessible and some actions should be available such as downloading or uploading material (documents, images etc).
 Three metrics can apply on the service to check it’s functionalities:
 * __Portal-WebCheck__ is a metric to check if the http responds
@@ -18,7 +18,7 @@ Three metrics can apply on the service to check it’s functionalities:
 The  site is assumed to operate properly if it is accessible and can support downloading material. Uploading material does not affect the state of the service (whether it is working properly or not). So in the Metrics Profile, the metrics **Portal-WebCheck** and **http.download** will be defined in order to be taken into account for concluding the status of the Site.
 
 
-#### Example 2  - Metrics Profile for a Repository service:
+### Example 2  - Metrics Profile for a Repository service:
 
 A service of type Repository runs on host2.example.com. The repository is considered to operate properly if it is accessible and validates the provided certificates. Two metrics can apply on the service to check it’s functionalities:
 * __Portal-WebCheck__ is a metric to check if the http responds
