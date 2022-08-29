@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[590],{468:e=>{e.exports=JSON.parse('{"title":"Guides","slug":"/category/guides","permalink":"/argo-monitoring/docs/category/guides","navigation":{"next":{"title":"Introduction","permalink":"/argo-monitoring/docs/Guides/intro"}}}')}}]);
