@@ -19,12 +19,14 @@ Availability = UP period / KNOWN period
 where 
 
 ```
-KNOWN = Total period / UNKNOWN period 
+KNOWN = Total period - UNKNOWN period = UP period + Down period + Scheduled Downtime 
 ```
 and
 
  - **UP** period : The duration  the status of the monitored item is OK or WARNING
  - **UNKNOWN** period: The duration  the status of the monitored item is UNKNOWN
+ - **Down** period: The duration  the status of the monitored item is in CRITICAL (or other problematic state)
+ - **Scheduled** Downtime period: The duration  the status of the monitored item is defined to be DOWNTIME signifying a scheduled downtime
  - **Total** period : The duration  of the monitoring (usually a day)
 
 ### Reliability  
