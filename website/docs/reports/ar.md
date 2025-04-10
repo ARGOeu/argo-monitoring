@@ -104,7 +104,7 @@ where:
  - **UNKNOWN** period: UNKNOWN period+MISSING period. This in numbers means 21600 seconds
  - **ScheduledDowntime** period: 14400 seconds
  - **Total** period : 86400 seconds
- - **Reliability** =18000/(86400-21600-14400)=0.3571, and converting to the scale of 100 the reliability is 35.771
+ - **Reliability** =18000/(86400-21600-14400)=0.35714, and converting to the scale of 100 the reliability is 35.714
 
  
 ARGO Monitoring Service also calculates results of up period, downtime period, unknown period as:
