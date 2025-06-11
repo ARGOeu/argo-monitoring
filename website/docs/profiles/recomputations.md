@@ -12,7 +12,7 @@ Recomputations are a vital mechanism for correcting or re-evaluating the status 
 
 Recomputation requests are typically initiated when:
 
-- **Unexpected events** such as power outages, hardware failures, or network issues negatively impact the accuracy of monitoring data.
+- **Incorrect service status detections** (false positives) that may distort availability or reliability metrics.
 - **Maintenance activities or scheduled downtimes** result in time periods that should not be included in availability or reliability calculations.
 - **Metric misconfigurations or data corruption** produce misleading or incorrect service states that need to be ignored or corrected.
 - **Audits, post-mortems, or appeals** uncover historical inconsistencies that require manual adjustments for fair reporting.
