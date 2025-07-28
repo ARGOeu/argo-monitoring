@@ -1,7 +1,7 @@
 pipeline {
     agent { 
         docker { 
-            image 'node:buster' 
+            image 'node:18-buster' 
         }
     }
     options {
@@ -17,7 +17,10 @@ pipeline {
     
         stage ('Deploy Docs') {
             when {
-                changeset 'website/**'
+                anyOf {
+                    branch 'master'
+                    branch 'devel'
+                }
             }
             steps {
                 echo 'Publish argo-monitoring docs...'
