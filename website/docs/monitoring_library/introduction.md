@@ -3,5 +3,130 @@ sidebar_position: 1
 title: Introduction 
 ---
 
+## Overview
 
-This is an empty page to add content
+ARGO Monitoring Service library: A simple python library for interacting with the ARGO Monitoring Service REST API
+
+The ARGO Monitoring Service library intends to provide access to basic functionality of the API, in a simple and intuitive way.
+
+## Library installation
+
+The library has been tested with Python versions 3.9, 3.11, and 3.12 on Rocky Linux 9. In order to install the library, you'll need to check out the source, have python setuptools installed, and run
+
+```bash
+python3 ./setup.py build && \
+  sudo python3 ./setup.py install
+```
+
+Alternatively, on RHEL-based systems with rpm-build and python3-dev installed, you may run
+
+```bash
+mkdir -p ~/rpmbuild/SOURCES && \
+  python3 ./setup.py build && \
+  python3 ./setup.py bdist_rpm && \
+  cp dist/argo-mon-library-0.1.0.tar.gz && \
+  rpmbuild -bb argo-mon-library.spec
+```
+
+to create an RPM file for each supported python version under ~/rpmbuild/RPMS/noarch, and then use rpm / dnf to install the desired RPM packages, e.g.
+
+```bash
+sudo dnf install ~/rpmbuild/RPMS/noarch/python3-argo-mon-library-0.1.0-1.el9.noarch.rpm
+```
+
+for version `0.1.0-1` of the library using the default (platform) python.
+
+## Authentication
+
+The Argo Monitoring library needs a valid API key to authenticate against the service's REST API. Each API key gives access to a specific tenant. Once a valid key has been obtained, a monitoring service object may be initialized as follows:
+
+```python
+from argo_mon_library import ArgoMonitoringService
+mon = ArgoMonitoringService(endpoint="mon_endpoint", apikey="your_api_key")
+```
+
+## Examples
+
+In the `examples` folder, you may find the following library usage examples:
+
+* getting a list of reports for a tenant
+* getting the status for each endpoint of all groups defined in a report
+* getting daily/monthy A/R results for groups defined in a report
+* getting information on issues for endpoints or metrics under a report
+* getting metric results for an endpoint
+* getting flapping trends
+
+Help on running each example is available by running the example with `-h`.
+
+### Listing reports
+
+Assuming you've saved your API key in a file under `~/mon.key`, you may run the first example against the development instance of the service with
+
+```bash
+python3 ./examples/get_reports.py --host api.devel.mon.argo.grnet.gr --api-key ~/mon.key -f
+```
+
+This will print out a list of reports for the tenant, along with some information about the report, such as thresholds and the topology schema group hierarchy.
+
+### Getting report endpoint statuses
+
+To get status data for endpoints belonging to groups of a report, run
+
+```bash
+python3 ./examples/get_endpoint_statuses.py --host api.devel.mon.argo.grnet.gr --api-key ~/mon.key -f --report REPORTNAME --start-date YYYY-MM-DD
+```
+
+where `REPORTNAME` is the name of a report, as listed in the 1st example, and `YYYY-MM-DD` is an ISO formated date. An optional end date may be passed with `--end-date YYY-MM-DD`, which otherwise defaults to the day defined by `--start-date`.
+
+### Getting report A/R results
+
+To get daily A/R results for all groups in a report, run
+
+```bash
+python3 ./examples/get_group_results.py --host api.devel.mon.argo.grnet.gr --api-key ~/mon.key -f --report REPORTNAME --start-date YYYY-MM-DD
+```
+
+where `REPORTNAME` is the name of a report, as listed in the 1st example, and `YYYY-MM-DD` is an ISO formated date. An optional end date may be passed with `--end-date YYY-MM-DD`, which otherwise defaults to the day defined by `--start-date`. Additionally,
+
+* The optional argument `--monthly` may be specified to fetch results with a monthy granularity, instead of daily.
+* The optional argument `--supergroup SUPERGROUPNAME` may be specified, in order to fetch results for a specific top-level group (supergroup)
+* The optional argument `--group GROUNAME` may be specified in order to fetch results for specific a group of each supergroup, instead of all groups
+
+### Getting information on issues
+
+To get information on issues for **endpoints** under a report, run
+
+```bash
+python3 ./examples/get_issues.py --host api.devel.mon.argo.grnet.gr --api-key ~/mon.key -f --report REPORTNAME --date YYYY-MM-DD --status STATUS 
+```
+
+where `date` may be an optionally provided date in order to receive historic information (if omitted, defaults to live issues), and `status` is an optional criticality filter (CRITICAL, WARNING, etc.). To get information on issues for a service group's **metrics** instead, use the `--metrics` flag, followed by a `--group <GROUPNAME>` parameter, to set the service group.
+
+When getting information on endpoint issues, **details88 about metric results may be obtained by employing the `--details <any|ENDPOINT>` parameter. A specific metric may be requested by using the `--metric <METRIC>` flag, or a specific point in time within the day specified by `--date <YYYY-MM-DD>` may be requested by adding the `--timestamp <YYYY-MM-DDTHH:mm:ssZ>` parameter, where the timestamp value must be provided in Zulu format.
+
+### Getting metric results for an endpoint
+
+Similar to the previous example, one can succintly get details about metric issues, or results in general, by making use of the `metric_results` resource, provided one knows the endpoint and, optionally, metric of interest, beforehand. In this example, we run
+
+```bash
+python3 ./examples/get_issues.py --host api.devel.mon.argo.grnet.gr --api-key ~/mon.key -f --date YYYY-MM-DD --endpoint ENDPOINT
+```
+
+where the `date` parameter works the same as in the previous example, and the `endpoint` parameter defines the endpoint of interest. Optionally, the parameters `status` and `metric` may be added, in order to filter by specific criticality or metric. If a metric has been specified, an optional `timestamp` parameter may be added as well, in order to pinpoint the returned details to a specific event.
+
+### Getting flapping trends
+
+One cat get a list of flapping trends under a specific report with respect to endpoint groups, services, endpoints, or metrics by running
+
+```bash
+python3 ./examples/get_flapping_trends.py --host api.devel.mon.argo.grnet.gr --api-key ~/mon.key -f --report REPORTNAME --type FLAPTYPE --start-date YYYY-MM-DD --end-date YYYY-MM-DD
+```
+
+where the start and end date parameters are optional (default is current date) and `FLAPTYPE` is one of `GROUPS`, `SERVICES`, `ENDPOINTS`, `METRICS`, or `METRICS_TAGS`. In the case of `METRIC_TAGS`, the optional parameter `--ext-tags` may be specified in order to print out data about metrics per tag, in addition to tags themselves. Additionally,
+
+* The optional argument `--monthly` may be specified to fetch results with a monthy granularity, instead of daily, when `start-date` and `end-date` are distinct
+* The optional argument `--top TOP` may be specified to fetch up to `TOP` results
+
+## Environment variables
+
+* `DEBUG`: Set to any truthy value in order to have debugging information printed to stdout, for development pusposes.
