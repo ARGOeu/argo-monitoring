@@ -1,61 +1,50 @@
 ---
 sidebar_position: 1
-title: Introduction 
+title: Introduction
 ---
 
 ## Overview
 
-ARGO Monitoring Service library: A simple python library for interacting with the ARGO Monitoring Service REST API
+ARGO Monitoring Service library: A simple Python library for interacting with the ARGO Monitoring Service REST API
 
 The ARGO Monitoring Service library intends to provide access to basic functionality of the API, in a simple and intuitive way.
 
 ## Library installation
 
+The library has been tested with Python versions 3.9, 3.11, and 3.12 on Rocky Linux 9. The recommended installation method is to use one of the prepared packages, but instructions for installation from source are also available.
+
 ### Prepared packages
 
-The library has been tested with Python versions 3.9, 3.11, and 3.12 on Rocky Linux 9. 
+Prepared packages may be [installed from PyPI](https://pypi.org/project/argo-mon-library/) using pip. For information on installing pip, if not readily available by your Python installation, please refer to [this guide](https://packaging.python.org/en/latest/tutorials/installing-packages/#requirements-for-installing-packages).
 
-RPM packages for Rocky Linux may be found at the ARGO Repository. PyPI packages are available as well.
-
-RPM production packages:
-
-- [http://rpm-repo.argo.grnet.gr/ARGO/prod/rocky9/](http://rpm-repo.argo.grnet.gr/ARGO/prod/rocky9)
-
-RPM devel packages:
-
-- [http://rpm-repo.argo.grnet.gr/ARGO/devel/rocky9/](http://rpm-repo.argo.grnet.gr/ARGO/devel/rocky9/)
-
-PyPI package:
-
-- [https://pypi.org/project/argo-mon-library/](https://pypi.org/project/argo-mon-library/)
-
+Production RPM packages for Rocky Linux 9 are also available at the [ARGO Repository](http://rpm-repo.argo.grnet.gr/ARGO/prod/rocky9). Users who want to test out new features may download packages from the [development area](http://rpm-repo.argo.grnet.gr/ARGO/devel/rocky9/) of the repository.
 
 ### Installation from source
 
-Iorder to install the library from source, you'll need to check out the [code from GitHub](https://github.com/ARGOeu/argo-mon-library), have python setuptools installed, and run
+In order to install the library from source, you'll need to check out the [code from GitHub](https://github.com/ARGOeu/argo-mon-library), have Python [setuptools installed](https://packaging.python.org/en/latest/tutorials/installing-packages/#ensure-pip-setuptools-and-wheel-are-up-to-date), and run the following in a Bash terminal
 
 ```bash
-python3 ./setup.py build && \
+$ python3 ./setup.py build && \
   sudo python3 ./setup.py install
 ```
 
-Alternatively, on RHEL-based systems with rpm-build and python3-dev installed, you may run
+Alternatively, on RHEL-based systems with the `rpm-build` and `python3-dev` packages installed, you may run
 
 ```bash
-mkdir -p ~/rpmbuild/SOURCES && \
+$ mkdir -p ~/rpmbuild/SOURCES && \
   python3 ./setup.py build && \
   python3 ./setup.py bdist_rpm && \
   cp dist/argo-mon-library-0.1.0.tar.gz && \
   rpmbuild -bb argo-mon-library.spec
 ```
 
-to create an RPM file for each supported python version under ~/rpmbuild/RPMS/noarch, and then use rpm/dnf to install the desired RPM packages, e.g.
+to create an RPM file under `~/rpmbuild/RPMS/noarch` for each supported Python version, and then use `rpm` or `yum`/`dnf` to install the desired RPM packages, e.g.
 
 ```bash
-sudo dnf install ~/rpmbuild/RPMS/noarch/python3-argo-mon-library-0.1.0-1.el9.noarch.rpm
+$ sudo dnf install ~/rpmbuild/RPMS/noarch/python3-argo-mon-library-0.1.0-1.el9.noarch.rpm
 ```
 
-for version `0.1.0-1` of the library using the default (platform) python.
+for version `0.1.0-1` of the library using the default (platform) Python.
 
 ## Authentication
 
@@ -68,7 +57,9 @@ mon = ArgoMonitoringService(endpoint="mon_endpoint", apikey="your_api_key")
 
 ## Examples
 
-In the `examples` folder, you may find the following library usage examples:
+#### Overview
+
+In the [examples](https://github.com/ARGOeu/argo-mon-library/tree/main/examples) folder, you may find the following library usage examples:
 
 * getting a list of reports for a tenant
 * getting endpoint statuses
@@ -79,20 +70,36 @@ In the `examples` folder, you may find the following library usage examples:
 
 Help on running each example is available by running the example with `-h`.
 
+#### Examples location
+
+Depending on your method of installation, the `examples` folder may reside in one of several locations:
+
+- `/usr/share/doc/python3-argo-mon-library/examples` for RPM installations using the platform Python
+- `/usr/share/doc/python3.XY-argo-mon-library/examples` for RPM installations using a specific Python version
+- `/usr/local/lib/python3.XY/site-packages/argo_mon_library/examples` for global (root) PyPI installations
+- `~/.local/lib/python3.XY/site-packages/argo_mon_library/examples` for local (user) PyPI installations
+- `VENV/lib/python3.XY/site-packages/argo_mon_library/examples` for venv PyPI installations, where `VENV` is the virtual enviroment's base directory
+- `SRC/examples` for installations from source, where `SRC` is the base directory of the checked-out codebase
+
 ### Listing reports
 
-Assuming you've saved your API key in a file under `~/mon.key`, you may run the first example against the development instance of the service with
+[This example](https://github.com/ARGOeu/argo-mon-library/blob/main/examples/get_reports.py) will print out a list of reports for the tenant, along with some information about the report, such as thresholds and the topology schema group hierarchy.
+
+#### Running the example in the terminal (Bash)
+
+To test it, assuming you've saved your API key in a file under `~/mon.key`, you may run the example against the development instance of the service by navigating to the installation's `examples` folder and executing
 
 ```bash
-python3 ./examples/get_reports.py --host api.devel.mon.argo.grnet.gr --api-key ~/mon.key -f
+$ python3 ./examples/get_reports.py --host api.devel.mon.argo.grnet.gr --api-key ~/mon.key -f
 ```
 
-This will print out a list of reports for the tenant, along with some information about the report, such as thresholds and the topology schema group hierarchy.
+#### Python code rundown
 
-The following code snippet from the example
+The following Python code snippet from the example
 - initializes a connection to the API, using a tenant API key (`mon = ArgoMonitoringService…`)
 - loops over the tenant's reports to print out report and threshold data (`for m in mon.reports`)
 - walks the topology\_schema in each report, to print out group types (`while g is not None`)
+
 
 ```python
 from argo_mon_library import ArgoMonitoringService
@@ -117,6 +124,7 @@ mon = ArgoMonitoringService(args.host, api_key)
         while g is not None:
             print(" {0} ↳ {1}".format("".join([" " for x in range(0, i)]), g.type))
             g = g.group
+            # Indent by two spaces
             j =+ 2
 ```
 
@@ -238,7 +246,7 @@ for supergroup in supergroups:
 To get information on issues for **endpoints** under a report, run
 
 ```bash
-python3 ./examples/get_issues.py --host api.devel.mon.argo.grnet.gr --api-key ~/mon.key -f --report REPORTNAME --date YYYY-MM-DD --status STATUS 
+python3 ./examples/get_issues.py --host api.devel.mon.argo.grnet.gr --api-key ~/mon.key -f --report REPORTNAME --date YYYY-MM-DD --status STATUS
 ```
 
 where `date` may be an optionally provided date in order to receive historic information (if omitted, defaults to live issues), and `status` is an optional criticality filter (CRITICAL, WARNING, etc.). To get information on issues for a service group's **metrics** instead, use the `--metrics` flag, followed by a `--group <GROUPNAME>` parameter, to set the service group.
