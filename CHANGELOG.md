@@ -1,6 +1,11 @@
 # Argo Monitoring Changelog
 
 
+## [v1.14.2] - (2025-12-04)
+
+### Components Updated:
+- **web-api**: [[v1.14.2](https://github.com/ARGOeu/argo-web-api/blob/master/CHANGELOG.md#v1142---2025-11-27)]
+
 ## [v1.14.1] - (2025-09-15)
 
 Add healtcheck feature to argo-web-api and update depedencies
