@@ -14,7 +14,7 @@ To ensure consistency across the federation, this specification standardizes how
 
 A check is a program that runs on a schedule, tests a specific aspect of a service, and reports back. Each execution produces two things: a status describing what it found, and a timestamp recording when the check ran.
 
-Each check is scheduled to run at a specific interval. A lightweight probe (for example, "is the endpoint responding?") might run every few minutes, while a heavier or more intrusive test (a full functional check, or a certificate or authentication test) might run every 15, 30, or 60 minutes.
+Each check is scheduled to run at a specific interval. A lightweight check (for example, "is the endpoint responding?") might run every few minutes, while a heavier or more intrusive test (a full functional check, or a certificate or authentication test) might run every 15, 30, or 60 minutes.
 
 At a minimal configuration, a set of possible status values is the following:
 
@@ -26,7 +26,7 @@ At a minimal configuration, a set of possible status values is the following:
 
 Different monitoring stacks may label these differently (Healthy for OK, Degraded for WARNING, and so on). What matters is that each stack maps its own status values onto this set, so that every Node agrees on which statuses count as up, down, or unknown.
 
-**Scheduled downtime** is a separate condition, not a status. A service may be *declared* to be in scheduled downtime (maintenance) for a defined period, independently of what its probes report. In the usual model this declaration takes precedence: while a service is in scheduled downtime, that time is treated as maintenance regardless of the underlying status. The Uptime figure below revisits exactly this point.
+**Scheduled downtime** is a separate condition, not a status. A service may be *declared* to be in scheduled downtime (maintenance) for a defined period, independently of what its checks report. In the usual model this declaration takes precedence: while a service is in scheduled downtime, that time is treated as maintenance regardless of the underlying status. The Uptime figure below revisits exactly this point.
 
 ## From results to timelines
 
@@ -43,7 +43,7 @@ Before any figure can be produced, every Node has to group the statuses the same
 * **Up** — `OK` or `WARNING`. A warning still counts as up.  
 * **Down** — `CRITICAL`.  
 * **Unknown** — `UNKNOWN` or `MISSING`: time we simply could not judge.  
-* **Scheduled downtime** — a declared window, independent of what the probes report.
+* **Scheduled downtime** — a declared window, independent of what the checks report.
 
 Time under which the status could not be measured is considered unknown and is never counted for or against a service. It is set aside, so that every figure reflects only the time that the monitoring system had a clear picture regarding the service it monitors.
 
