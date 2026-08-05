@@ -124,16 +124,16 @@ paths:
                   name: argo-mon
                   results:
                   - timestamp: '2026-07-02T00:00:00Z'
-                    state: OK
+                    value: OK
                   - timestamp: '2026-07-02T06:49:32Z'
-                    state: OK
+                    value: OK
                 - id: argo-msg
                   name: argo-msg
                   results:
                   - timestamp: '2026-07-02T00:00:00Z'
-                    state: WARNING
+                    value: WARNING
                   - timestamp: '2026-07-02T06:49:32Z'
-                    state: CRITICAL
+                    value: CRITICAL
                 page:
                   limit: 50
                   offset: 0
@@ -146,7 +146,7 @@ paths:
       operationId: getServiceStatus
       summary: Get status for a single service
       description: |
-        Current state (one result) when no date range is supplied, or the
+        Return the current status (one result) when no date range is supplied, or the
         status timeline over the given range.
       parameters:
       - $ref: '#/components/parameters/ServiceId'
@@ -165,9 +165,9 @@ paths:
                   name: argo-monintoring
                   results:
                   - timestamp: '2026-07-02T00:00:00Z'
-                    state: OK
+                    value: OK
                   - timestamp: '2026-07-02T06:49:32Z'
-                    state: OK
+                    value: OK
         '400':
           $ref: '#/components/responses/BadRequest'
         '404':
@@ -333,7 +333,9 @@ paths:
                 data:
                 - id: argo-mon
                   name: argo-mon
-                  status: OK
+                  status: 
+                    timestamp: '2026-07-02T10:31:00Z'
+                    value: OK
                   metrics:
                     availability: 100
                     reliability: 100
@@ -342,7 +344,9 @@ paths:
                   issues: []
                 - id: argo-msg
                   name: argo-msg
-                  status: CRITICAL
+                  status: 
+                    timestamp: '2026-07-02T10:31:00Z'
+                    value: CRITICAL
                   metrics:
                     availability: 97.2
                     reliability: 100
@@ -381,7 +385,9 @@ paths:
                 data:
                 - id: argo-mon
                   name: argo-mon
-                  status: OK
+                  status: 
+                    timestamp: '2026-07-02T10:31:00Z'
+                    value: OK
                   metrics:
                     availability: 100
                     reliability: 100
@@ -494,9 +500,9 @@ components:
         minimum: 0
         default: 0
   schemas:
-    State:
+    Status:
       type: string
-      description: Monitoring state.
+      description: Monitoring status.
       enum: [OK, WARNING, CRITICAL, UNKNOWN, MISSING]
       example: OK
     PageInfo:
@@ -580,14 +586,14 @@ components:
             $ref: '#/components/schemas/StatusResult'
     StatusResult:
       type: object
-      required: [timestamp, state]
+      required: [timestamp, value]
       properties:
         timestamp:
           type: string
           format: date-time
           example: '2026-07-02T06:49:32Z'
-        state:
-          $ref: '#/components/schemas/State'
+        value:
+          $ref: '#/components/schemas/Status'
     DowntimesEntry:
       type: object
       required: [id, name, results]
@@ -650,7 +656,7 @@ components:
           format: date-time
           example: '2026-07-01T14:22:10Z'
         status:
-          $ref: '#/components/schemas/State'
+          $ref: '#/components/schemas/Status'
         host:
           type: string
           example: argo-mon-api-03
@@ -674,7 +680,7 @@ components:
           description: Service's name
           example: argo-mon
         status:
-          $ref: '#/components/schemas/State'
+          $ref: '#/components/schemas/Status'
         metrics:
           $ref: '#/components/schemas/SummaryMetrics'
         downtimes:
