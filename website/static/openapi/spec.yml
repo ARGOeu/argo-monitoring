@@ -269,7 +269,7 @@ paths:
                   - timestamp: '2026-07-01T14:22:10Z'
                     status: CRITICAL
                     host: argo-mon-api-03
-                    source: argo-mon-api
+                    serviceType: argo-mon-api
                     message: certificate expired - could not connect
                 page:
                   limit: 50
@@ -303,7 +303,7 @@ paths:
                   - timestamp: '2026-07-01T14:22:10Z'
                     status: WARNING
                     host: argo-mon-api-03
-                    source: argo-mon-api
+                    serviceType: argo-mon-api
                     message: p99 latency exceeded 2s threshold
         '400':
           $ref: '#/components/responses/BadRequest'
@@ -356,7 +356,7 @@ paths:
                   - timestamp: '2026-07-02T09:10:00Z'
                     status: CRITICAL
                     host: argo-msg-mq-01
-                    source: message-queue
+                    serviceType: message-queue
                     message: Consumer lag exceeded 5000 messages
                 page:
                   limit: 50
@@ -660,7 +660,7 @@ components:
         host:
           type: string
           example: argo-mon-api-03
-        source:
+        serviceType:
           type: string
           example: argo-mon-api
         message:
